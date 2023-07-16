@@ -55,7 +55,7 @@ def get_answer_one_problem(data, paragraph_num: int, problem_num: int, prompt_fu
 def get_prompt_by_type(type_num: int) -> callable:
     # 0 : 비문학, 1 : 문학, 2 : 화법과 작문, 3 : 문법
     if type_num == 0:
-        return basic_prompt
+        return talk_prompt
     elif type_num == 1:
         return literature_prompt
     elif type_num == 2:
