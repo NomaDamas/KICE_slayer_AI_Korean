@@ -4,7 +4,7 @@ from typing import List
 
 from dotenv import load_dotenv
 import openai
-from prompts import basic_prompt, talk_prompt, literature_prompt
+from prompts import basic_prompt, talk_prompt, literature_prompt, grammar_prompt
 import click
 from tqdm import tqdm
 import time
@@ -59,10 +59,9 @@ def get_prompt_by_type(type_num: int) -> callable:
     elif type_num == 1:
         return literature_prompt
     elif type_num == 2:
-        return talk_prompt
+        return literature_prompt
     else:
-        print("type_num must be 0, 1, 2. 문법 is not supported yet")
-        return basic_prompt
+        return grammar_prompt
 
 
 def save_results_txt(data, save_path: str, answer_list: List[str]):
@@ -95,8 +94,10 @@ def main(test_file, save_path):
     for paragraph_index, paragraph in enumerate(test):
         prompt_func = get_prompt_by_type(int(paragraph["type"]))
         for problem_index, problem in tqdm(enumerate(paragraph["problems"])):
+            if "type" in list(problem.keys()):
+                prompt_func = get_prompt_by_type(int(problem["type"]))
             answer = get_answer_one_problem(test, paragraph_index, problem_index, prompt_func)
-            logging.basicConfig(filename=save_path.split(".")[0] + "_log.log", level=logging.INFO)
+            logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
             logging.info(answer)
             answer_list.append(answer)
             time.sleep(20)
