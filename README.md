@@ -129,8 +129,7 @@ python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_re
 top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을 달성하지 못할 수도 있다는 점 주의 부탁드립니다.
 
 ## Who made this?
-이 프로젝트는 한동대 정철현 교수님의 지원을 받았습니다. 
-수능 국어 만렙, 삼수생 김병욱과 정시파이터 김동규, 한동건이 대학생의 패기와 열정으로 만들었습니다.
+이 프로젝트는 포스텍영재기업인교육원 내 AI 동아리인 PCEO-AI-CLUB(지도교수 : (주)마커 정철현 박사)에서 진행했습니다. 저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트도 만들고 있습니다.
 
 ## Appendix
 ### 23 수능 오답 풀이
