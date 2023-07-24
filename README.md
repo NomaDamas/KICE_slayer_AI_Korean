@@ -193,7 +193,6 @@ GPT-4가 *문맥적으로* 비슷한 단어를 판단하도록 하려면, 해당
   - EBS 해설
 
     ![17번 문제 EBS 해설](./resource/17_ebs.png)
-    
 
 ## How to use
 아래 코드로 해당 레포를 clone합니다.
@@ -215,12 +214,12 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을
 
 ## Who made this?
 
-이 프로젝트는 포스텍영재기업인교육원 AI 동아리인 NomaDams에서 진행했습니다. 저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트를 만들고 있습니다.
+이 프로젝트는 포스텍영재기업인교육원 AI 동아리인 NomaDamas에서 진행했습니다.
+저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트를 만들고 있습니다.
 
 [NomaDamas 구성]
-- 지도 교수: 정철현 박사 ([이메일](c.jeong@handong.edu))
-- 구성원: 김동규 ([이메일](vkehfdl1@gmail.com)), 김병욱 ([이메일](andreaytk2000@gmail.com)), 한동건 ([이메일](hanpanjjang1@gmail.com))
-
+- 지도 교수: 정철현 박사 ([이메일](mailto:c.jeong@handong.edu))
+- 구성원: 김동규 ([이메일](mailto:vkehfdl1@gmail.com)), 김병욱 ([이메일](mailto:andreaytk2000@gmail.com)), 한동건 ([이메일](mailto:hanpanjjang1@gmail.com))
 
 ## Lesson Learned
 - ### GPT-4는 수능 국어 1등급 (상위 4%)을 받을 수 있다.
@@ -246,7 +245,6 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을
 - ### 선택지 순서가 영향을 미치기도 한다
 
 - ### 최종 정답을 말하는 타이밍이 영향을 미치기도 한다
-
 
 ## Appendix
 ### 23 수능 오답 풀이
