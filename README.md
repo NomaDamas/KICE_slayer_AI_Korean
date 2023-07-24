@@ -10,10 +10,14 @@
 저희는 프롬프트 엔지니어링과 함께라면, GPT-4도 수능 국어 1등급을 달성할 수 있다고 믿었습니다.
 이 레포는 저희의 과정과 결과를 보여주는 레포입니다.
 
+---
+
 ## Result
 아무 프롬프트 엔지니어링 없는 GPT-4는 23수능 국어(화작) 86점, 3등급이었습니다.
 프롬프트 엔지니어링을 통해 GPT-4의 성적을 96점, 1등급까지 끌어 올렸습니다.
 GPT-4가 내놓은 전체 정답과 풀이는 ```result/2023_11_KICE_top_p_zero_lll.txt```에 있습니다.
+
+---
 
 ## Methods
 ### 1. 프롬프트 엔지니어링
@@ -194,6 +198,7 @@ GPT-4가 *문맥적으로* 비슷한 단어를 판단하도록 하려면, 해당
 
     ![17번 문제 EBS 해설](./resource/17_ebs.png)
     
+---
 
 ## How to use
 아래 코드로 해당 레포를 clone합니다.
@@ -213,14 +218,18 @@ python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_re
 ```
 top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을 달성하지 못할 수도 있다는 점 주의 부탁드립니다.
 
+---
+
 ## Who made this?
 
-이 프로젝트는 포스텍영재기업인교육원 AI 동아리인 NomaDams에서 진행했습니다. 저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트를 만들고 있습니다.
+이 프로젝트는 포스텍영재기업인교육원 AI 동아리인 NomaDamas에서 진행했습니다.
+저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트를 만들고 있습니다.
 
 [NomaDamas 구성]
-- 지도 교수: 정철현 박사 ([이메일](c.jeong@handong.edu))
-- 구성원: 김동규 ([이메일](vkehfdl1@gmail.com)), 김병욱 ([이메일](andreaytk2000@gmail.com)), 한동건 ([이메일](hanpanjjang1@gmail.com))
+- 지도 교수: 정철현 박사 ([이메일](mailto:c.jeong@handong.edu))
+- 구성원: 김동규 ([이메일](mailto:vkehfdl1@gmail.com)), 김병욱 ([이메일](mailto:andreaytk2000@gmail.com)), 한동건 ([이메일](mailto:hanpanjjang1@gmail.com))
 
+---
 
 ## Lesson Learned
 - ### GPT-4는 수능 국어 1등급 (상위 4%)을 받을 수 있다.
@@ -247,6 +256,7 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을
 
 - ### 최종 정답을 말하는 타이밍이 영향을 미치기도 한다
 
+---
 
 ## Appendix
 ### 23 수능 오답 풀이
