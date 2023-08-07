@@ -247,7 +247,7 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 1등급을
 
 ## Who made this?
 
-저희는 포스텍영재기업인교육원 AI 동아리인 NomaDamas입니다.
+저희는 포스텍영재기업인교육원 AI 과정에서 만난 교수와 제자들로 구성된 프로젝트 팀인 NomaDamas입니다.
 또, 저희는 보안 위협과 환각 증세가 없는 Document QA 인공지능 [KoPrivateGPT](https://github.com/PCEO-AI-CLUB/KoPrivateGPT) 프로젝트 역시 만들고 있습니다.
 
 [NomaDamas 구성]
