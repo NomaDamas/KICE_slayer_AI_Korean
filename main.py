@@ -8,7 +8,7 @@ import openai
 import pandas as pd
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import GooglePalm
+from langchain.llms import GooglePalm, VLLMOpenAI
 from langchain.schema import StrOutputParser
 from tqdm import tqdm
 
@@ -99,7 +99,7 @@ def select_model(model_name: str):
     if model_name == 'gpt-4':
         return ChatOpenAI(model_name='gpt-4')
     elif model_name == 'llama-2':
-        return ChatOpenAI(model_name='llama-2')  # TODO: change this to vLLM colab version
+        return VLLMOpenAI(model_name="", openai_api_base="")  # TODO: change this to vLLM colab version
     elif model_name == 'palm':
         return GooglePalm()
     else:
@@ -152,7 +152,7 @@ def main(test_file, save_path, model_name, start_num, end_num):
             answer_list.append([paragraph['id'], i, problem['answer'], answer,
                                 problem['score']])  # id, problem_num, gt_answer, pred, score
             save_result_pd(save_path, answer_list)
-            time.sleep(20)
+            time.sleep(15)
 
 
 if __name__ == "__main__":
