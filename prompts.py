@@ -1,43 +1,53 @@
 import openai
+from langchain.prompts import PromptTemplate
 
 
-def basic_prompt(paragraph, question, choices, question_plus="", no_paragraph=False):
-    system_prompt = """
+basic_prompt = PromptTemplate.from_template(
+        """
         국어 시험 문제를 푸는 똑똑한 학생으로써 다음 문제의 답을 구하세요.
         지문을 읽고, 질문에 대한 답을 1부터 5까지의 선택지 중에 한 개만 골라서 대답해야 합니다.
-    """
-    if not no_paragraph:
-        user_prompt = f"""
-            지문 :
-            {paragraph}
-        """
-    else:
-        user_prompt = ""
-    if question_plus:
-        user_prompt += f"""
-            <보기> :
-            {question_plus}
-        """
-    user_prompt += f"""
-        질문 :
+        
+        지문 : 
+        {paragraph}
+        
+        질문 : 
         {question}
-
+        
         선택지 :
-        1번 - {choices[0]}
-        2번 - {choices[1]}
-        3번 - {choices[2]}
-        4번 - {choices[3]}
-        5번 - {choices[4]}
-
+        1번 - {choices_1}
+        2번 - {choices_2}
+        3번 - {choices_3}
+        4번 - {choices_4}
+        5번 - {choices_5}
+        
         1번, 2번, 3번, 4번, 5번 중에 하나를 정답으로 고르세요. 정답 :
-    """
+        """
+    )
 
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{
-        "role": "system", "content": system_prompt
-    }, {
-        "role": "user", "content": user_prompt
-    }])
-    return completion.choices[0].message.content
+basic_prompt_plus = PromptTemplate.from_template(
+        """
+        국어 시험 문제를 푸는 똑똑한 학생으로써 다음 문제의 답을 구하세요.
+        지문을 읽고, 질문에 대한 답을 1부터 5까지의 선택지 중에 한 개만 골라서 대답해야 합니다.
+        
+        지문 : 
+        {paragraph}
+        
+        질문 : 
+        {question}
+        
+        <보기> :
+        {question_plus}
+        
+        선택지 :
+        1번 - {choices_1}
+        2번 - {choices_2}
+        3번 - {choices_3}
+        4번 - {choices_4}
+        5번 - {choices_5}
+        
+        1번, 2번, 3번, 4번, 5번 중에 하나를 정답으로 고르세요. 정답 :
+        """
+    )
 
 
 def talk_prompt(paragraph, question, choices, question_plus="", no_paragraph=False):

@@ -3,3 +3,5 @@ guidance
 python-dotenv
 tqdm
 click
+langchain
+pandas
