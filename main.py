@@ -12,6 +12,7 @@ from langchain.llms import GooglePalm, VLLMOpenAI
 from langchain.schema import StrOutputParser
 from tqdm import tqdm
 
+from kt import KTMRC
 from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt
 
 
@@ -99,20 +100,24 @@ def select_model(model_name: str):
     if model_name == 'gpt-4':
         return ChatOpenAI(model_name='gpt-4')
     elif model_name == 'llama-2':
-        return VLLMOpenAI(model_name="", openai_api_base="")  # TODO: change this to vLLM colab version
+        return VLLMOpenAI(model_name="maywell/Synatra-7B-v0.3-base", openai_api_base=os.getenv('VLLM_BASE_URL'),
+                          openai_api_key="")
     elif model_name == 'palm':
         return GooglePalm()
+    elif model_name == 'kt':
+        return KTMRC()
     else:
-        raise ValueError('model_name must be one of gpt-4, llama-2, palm')
+        raise ValueError('model_name must be one of gpt-4, llama-2, palm, kt')
 
 
 @click.command()
-@click.option('--test_file', help='test file path')
-@click.option('--save_path', help='save path')
-@click.option('--model_name', help='choice between gpt-4, llama-2, palm')
+@click.option('--test_file', help='test file path', default='data/2015_11_KICE.json')
+@click.option('--save_path', help='save path', default='result/2015_test_kt.csv')
+@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt', default='kt')
 @click.option('--start_num', default=0, help='evaluation start to this number')
 @click.option('--end_num', default=50, help='evaluation end to this number')
 def main(test_file, save_path, model_name, start_num, end_num):
+    load_dotenv()
     set_openai_key()
     test = load_test(test_file)
     answer_list = list()
@@ -152,7 +157,8 @@ def main(test_file, save_path, model_name, start_num, end_num):
             answer_list.append([paragraph['id'], i, problem['answer'], answer,
                                 problem['score']])  # id, problem_num, gt_answer, pred, score
             save_result_pd(save_path, answer_list)
-            time.sleep(15)
+            if model_name == 'gpt-4':
+                time.sleep(15)
 
 
 if __name__ == "__main__":
