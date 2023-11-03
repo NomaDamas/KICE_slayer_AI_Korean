@@ -23,7 +23,7 @@ basic_prompt = PromptTemplate.from_template(
         1번, 2번, 3번, 4번, 5번 중에 하나를 정답으로 고르세요. 정답 :
         """
     )
-
+# KTMRC 사용하려면 '지문 :', '질문 :', '<보기> :', '선택지 :'가 포함된 prompt를 사용해야 함
 basic_prompt_plus = PromptTemplate.from_template(
         """
         국어 시험 문제를 푸는 똑똑한 학생으로써 다음 문제의 답을 구하세요.

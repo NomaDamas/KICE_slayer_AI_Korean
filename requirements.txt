@@ -6,3 +6,4 @@ click
 langchain
 pandas
 google-generativeai
+bardapi
