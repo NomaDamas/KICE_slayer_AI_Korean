@@ -111,9 +111,9 @@ def select_model(model_name: str):
 
 
 @click.command()
-@click.option('--test_file', help='test file path', default='data/2015_11_KICE.json')
-@click.option('--save_path', help='save path', default='result/2015_test_kt.csv')
-@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt', default='kt')
+@click.option('--test_file', help='test file path')
+@click.option('--save_path', help='save path')
+@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
 @click.option('--start_num', default=0, help='evaluation start to this number')
 @click.option('--end_num', default=50, help='evaluation end to this number')
 def main(test_file, save_path, model_name, start_num, end_num):
