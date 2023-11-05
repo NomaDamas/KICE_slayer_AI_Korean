@@ -239,11 +239,11 @@ wook_prompt_v2 = PromptTemplate.from_template(
     {question}
     
     선택지 :
-    1번 - {choices[0]}
-    2번 - {choices[1]}
-    3번 - {choices[2]}
-    4번 - {choices[3]}
-    5번 - {choices[4]}
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
     
     문제를 풀이할 때, 반드시 지문을 참고하세요.
     문제는 무조건 1개의 정답만 있습니다.
@@ -266,19 +266,19 @@ wook_prompt_v2_plus = PromptTemplate.from_template(
     
     지문 :
     {paragraph}
-    
+
     질문 :
     {question}
-    
+
     <보기> :
     {question_plus}
-    
+
     선택지 :
-    1번 - {choices[0]}
-    2번 - {choices[1]}
-    3번 - {choices[2]}
-    4번 - {choices[3]}
-    5번 - {choices[4]}
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
     
     문제를 풀이할 때, 반드시 지문을 참고하세요.
     문제는 무조건 1개의 정답만 있습니다.
