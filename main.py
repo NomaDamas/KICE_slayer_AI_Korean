@@ -13,7 +13,9 @@ from langchain.schema import StrOutputParser
 from tqdm import tqdm
 
 from kt import KTMRC
-from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt
+from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt, zero_shot_cot_prompt, \
+    zero_shot_cot_prompt_plus, ps_prompt, ps_prompt_plus, wook_prompt, wook_prompt_plus, wook_prompt_v2, \
+    wook_prompt_v2_plus
 
 
 def load_test(filepath: str):
@@ -110,13 +112,7 @@ def select_model(model_name: str):
         raise ValueError('model_name must be one of gpt-4, llama-2, palm, kt')
 
 
-@click.command()
-@click.option('--test_file', help='test file path')
-@click.option('--save_path', help='save path')
-@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
-@click.option('--start_num', default=0, help='evaluation start to this number')
-@click.option('--end_num', default=50, help='evaluation end to this number')
-def main(test_file, save_path, model_name, start_num, end_num):
+def main_func(test_file, save_path, model_name, start_num=0, end_num=50):
     load_dotenv()
     set_openai_key()
     test = load_test(test_file)
@@ -137,9 +133,9 @@ def main(test_file, save_path, model_name, start_num, end_num):
                 paragraph_text = paragraph['paragraph']
             if "question_plus" in list(problem.keys()):
                 question_plus_text = problem["question_plus"]
-                prompt = basic_prompt_plus  # edit this for new prompt
+                prompt = wook_prompt_v2  # edit this for new prompt
             else:
-                prompt = basic_prompt  # edit here for new prompt
+                prompt = wook_prompt_v2_plus  # edit here for new prompt
                 question_plus_text = ""
 
             runnable = prompt | model | StrOutputParser()
@@ -161,5 +157,15 @@ def main(test_file, save_path, model_name, start_num, end_num):
                 time.sleep(15)
 
 
-if __name__ == "__main__":
-    main()
+# @click.command()
+# @click.option('--test_file', help='test file path')
+# @click.option('--save_path', help='save path')
+# @click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
+# @click.option('--start_num', default=0, help='evaluation start to this number')
+# @click.option('--end_num', default=50, help='evaluation end to this number')
+# def main(test_file, save_path, model_name, start_num, end_num):
+#     main_func(test_file, save_path, model_name, start_num, end_num)
+
+#
+# if __name__ == "__main__":
+#     main()
