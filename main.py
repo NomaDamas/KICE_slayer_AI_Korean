@@ -112,13 +112,16 @@ def select_model(model_name: str):
         raise ValueError('model_name must be one of gpt-4, llama-2, palm, kt')
 
 
-def main_func(test_file, save_path, model_name, start_num=0, end_num=50):
+def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_list=None,
+              prompt_base=basic_prompt, prompt_plus=basic_prompt_plus):
     load_dotenv()
     set_openai_key()
     test = load_test(test_file)
     answer_list = list()
     model = select_model(model_name)
     i = 0
+    if run_list is None:
+        run_list = list(range(1, 46))
     for paragraph_index, paragraph in enumerate(test):
         for problem_index, problem in tqdm(enumerate(paragraph["problems"])):
             i += 1
@@ -126,6 +129,8 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50):
                 continue
             if i > end_num:
                 break
+            if i not in run_list:
+                continue
 
             if "no_paragraph" in list(problem.keys()):
                 paragraph_text = ""
@@ -133,9 +138,9 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50):
                 paragraph_text = paragraph['paragraph']
             if "question_plus" in list(problem.keys()):
                 question_plus_text = problem["question_plus"]
-                prompt = wook_prompt_v2  # edit this for new prompt
+                prompt = prompt_base  # edit this for new prompt
             else:
-                prompt = wook_prompt_v2_plus  # edit here for new prompt
+                prompt = prompt_plus  # edit here for new prompt
                 question_plus_text = ""
 
             runnable = prompt | model | StrOutputParser()
@@ -153,8 +158,6 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50):
             answer_list.append([paragraph['id'], i, problem['answer'], answer,
                                 problem['score']])  # id, problem_num, gt_answer, pred, score
             save_result_pd(save_path, answer_list)
-            if model_name == 'gpt-4':
-                time.sleep(15)
 
 
 # @click.command()

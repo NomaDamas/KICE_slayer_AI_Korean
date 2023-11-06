@@ -149,6 +149,53 @@ ps_prompt_plus = PromptTemplate.from_template(
     """
 )
 
+ranking_prompt = PromptTemplate.from_template(
+    """
+    국어 시험 문제를 푸는 똑똑한 학생으로서 다음 문제의 답을 구하세요.
+    지문을 읽고, 질문에 대한 답을 1부터 5까지의 선택지 중에 한 개만 골라서 대답해야 합니다.
+
+    지문 : 
+    {paragraph}
+
+    질문 : 
+    {question}
+
+    선택지 :
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
+
+    다음 선택지들을 답에 가장 가까운 순서대로 정렬하세요.
+    """
+)
+
+ranking_prompt_plus = PromptTemplate.from_template(
+    """
+    국어 시험 문제를 푸는 똑똑한 학생으로서 다음 문제의 답을 구하세요.
+    지문을 읽고, 질문에 대한 답을 1부터 5까지의 선택지 중에 한 개만 골라서 대답해야 합니다.
+
+    지문 : 
+    {paragraph}
+
+    질문 : 
+    {question}
+
+    <보기> :
+    {question_plus}
+
+    선택지 :
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
+
+    다음 선택지들을 답에 가장 가까운 순서대로 정렬하세요.
+    """
+)
+
 wook_prompt = PromptTemplate.from_template(
     """
     국어 시험 문제를 푸는 대한민국의 고3 수험생으로서 위의 요약을 바탕으로 다음 문제의 답을 구하세요.
@@ -285,6 +332,73 @@ wook_prompt_v2_plus = PromptTemplate.from_template(
     문제를 풀이할 때 모든 선택지들을 검토하세요.
     모든 선택지마다 근거를 지문에서 찾아 설명하세요.
 """
+)
+
+test_prompt = PromptTemplate.from_template(
+    """
+    지문 :
+    {paragraph}
+
+    질문 :
+    {question}
+
+    선택지 :
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
+
+    선택지에서 1개의 정답을 고르세요.
+    무조건 1개의 정답만 있습니다.
+    문제를 풀이할 때, 반드시 지문을 바탕으로 근거를 찾고, 논리적으로 답하세요.
+    풀이부터 말한 후 마지막에 정답을 한 가지만 골라서 말하세요.
+    
+    다음 형식에 따라서 대답합니다.
+    
+    풀이 : 
+    (너의 풀이)
+    
+    정답 : (1~5번 중 선택)번
+    
+    지문이나 정답에 필요한 정보가 부족해도, 최선을 다해 답을 찾아서 대답하세요.
+    정답이 없거나, 복수 개의 정답은 절대 허용되지 않습니다.
+    """
+)
+
+test_prompt_plus = PromptTemplate.from_template(
+    """
+    지문 :
+    {paragraph}
+
+    질문 :
+    {question}
+
+    <보기> :
+    {question_plus}
+    
+    선택지 :
+    1번 - {choices_1}
+    2번 - {choices_2}
+    3번 - {choices_3}
+    4번 - {choices_4}
+    5번 - {choices_5}
+
+    선택지에서 1개의 정답을 고르세요.
+    무조건 1개의 정답만 있습니다.
+    문제를 풀이할 때, 반드시 지문을 바탕으로 근거를 찾고, 논리적으로 답하세요.
+    풀이부터 말한 후 마지막에 정답을 한 가지만 골라서 말하세요.
+    
+    다음 형식에 따라서 대답합니다.
+    
+    풀이 : 
+    (너의 풀이)
+    
+    정답 : (1~5번 중 선택)번
+    
+    지문이나 정답에 필요한 정보가 부족해도, 최선을 다해 답을 찾아서 대답하세요.
+    정답이 없거나, 복수 개의 정답은 절대 허용되지 않습니다.
+    """
 )
 
 
