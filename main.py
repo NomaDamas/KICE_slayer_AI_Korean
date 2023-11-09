@@ -100,7 +100,7 @@ def save_result_pd(save_path: str, answer_list):
 
 def select_model(model_name: str):
     if model_name == 'gpt-4':
-        return ChatOpenAI(model_name='gpt-4')
+        return ChatOpenAI(model_name='gpt-4-32k')
     elif model_name == 'llama-2':
         return VLLMOpenAI(model_name="maywell/Synatra-7B-v0.3-base", openai_api_base=os.getenv('VLLM_BASE_URL'),
                           openai_api_key="")
@@ -160,15 +160,15 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_lis
             save_result_pd(save_path, answer_list)
 
 
-# @click.command()
-# @click.option('--test_file', help='test file path')
-# @click.option('--save_path', help='save path')
-# @click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
-# @click.option('--start_num', default=0, help='evaluation start to this number')
-# @click.option('--end_num', default=50, help='evaluation end to this number')
-# def main(test_file, save_path, model_name, start_num, end_num):
-#     main_func(test_file, save_path, model_name, start_num, end_num)
+@click.command()
+@click.option('--test_file', help='test file path')
+@click.option('--save_path', help='save path')
+@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
+@click.option('--start_num', default=0, help='evaluation start to this number')
+@click.option('--end_num', default=50, help='evaluation end to this number')
+def main(test_file, save_path, model_name, start_num, end_num):
+    main_func(test_file, save_path, model_name, start_num, end_num)
 
-#
-# if __name__ == "__main__":
-#     main()
+
+if __name__ == "__main__":
+    main()
