@@ -112,7 +112,7 @@ def main(test_file, save_path, model):
     answer_list = list()
     for paragraph_index, paragraph in enumerate(test):
         prompt_func = get_prompt_by_type(int(paragraph["type"]))
-        for problem_index, problem in tqdm(enumerate(paragraph["problems"])):
+        for problem_index, problem in tqdm(enumerate(paragraph["problems"]), total=len(paragraph["problems"])):
             if "type" in list(problem.keys()):
                 prompt_func = get_prompt_by_type(int(problem["type"]))
             answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
