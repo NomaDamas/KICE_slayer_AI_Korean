@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from typing import List
 
 import click
 import openai
@@ -89,7 +88,6 @@ def main(test_file, save_path, model):
     if model not in OPENAI_MODELS:
         raise ValueError(f"Unsupported openai model! Please select one of {OPENAI_MODELS}")
     test = load_test(test_file)
-    answer_list = list()
 
     _id = 0
     with open(save_path, "w", encoding="UTF-8") as fw:
