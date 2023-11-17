@@ -1,7 +1,7 @@
 import openai
 
 
-def basic_prompt(paragraph, question, choices, question_plus="", no_paragraph=False):
+def basic_prompt(model, paragraph, question, choices, question_plus="", no_paragraph=False):
     system_prompt = """
         국어 시험 문제를 푸는 똑똑한 학생으로써 다음 문제의 답을 구하세요.
         지문을 읽고, 질문에 대한 답을 1부터 5까지의 선택지 중에 한 개만 골라서 대답해야 합니다.
@@ -32,15 +32,17 @@ def basic_prompt(paragraph, question, choices, question_plus="", no_paragraph=Fa
         1번, 2번, 3번, 4번, 5번 중에 하나를 정답으로 고르세요. 정답 :
     """
 
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{
-        "role": "system", "content": system_prompt
-    }, {
-        "role": "user", "content": user_prompt
-    }])
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+    )
     return completion.choices[0].message.content
 
 
-def talk_prompt(paragraph, question, choices, question_plus="", no_paragraph=False):
+def talk_prompt(model, paragraph, question, choices, question_plus="", no_paragraph=False):
     system_prompt = """
         국어 시험 문제를 푸는 대한민국의 고3 수험생으로서 위의 요약을 바탕으로 다음 문제의 답을 구하세요.
 
@@ -86,15 +88,16 @@ def talk_prompt(paragraph, question, choices, question_plus="", no_paragraph=Fal
 
     """
 
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{
-        "role": "system", "content": system_prompt
-    }, {
-        "role": "user", "content": user_prompt
-    }], top_p=0)
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ], top_p=0)
     return completion.choices[0].message.content
 
 
-def literature_prompt(paragraph, question, choices, question_plus="", no_paragraph=False):
+def literature_prompt(model, paragraph, question, choices, question_plus="", no_paragraph=False):
     system_prompt = """
         국어 시험 문제를 푸는 대한민국의 고3 수험생으로서 위의 요약을 바탕으로 다음 문제의 답을 구하세요.
 
@@ -139,15 +142,16 @@ def literature_prompt(paragraph, question, choices, question_plus="", no_paragra
 
     """
 
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{
-        "role": "system", "content": system_prompt
-    }, {
-        "role": "user", "content": user_prompt
-    }], top_p=0)
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ], top_p=0)
     return completion.choices[0].message.content
 
 
-def grammar_prompt(paragraph, question, choices, question_plus="", get_prompt=False, no_paragraph=False):
+def grammar_prompt(model, paragraph, question, choices, question_plus="", get_prompt=False, no_paragraph=False):
     system_prompt = """
         당신은 국어 시험 문제를 푸는 대한민국의 고3 수험생으로서 최종 정답을 고르시오.
 
@@ -199,9 +203,10 @@ def grammar_prompt(paragraph, question, choices, question_plus="", get_prompt=Fa
     """
     if get_prompt:
         return system_prompt +"\n\n" +user_prompt
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{
-        "role": "system", "content": system_prompt
-    }, {
-        "role": "user", "content": user_prompt
-    }], top_p=0)
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ], top_p=0)
     return completion.choices[0].message.content

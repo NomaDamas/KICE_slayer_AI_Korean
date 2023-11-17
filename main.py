@@ -10,6 +10,13 @@ from tqdm import tqdm
 import time
 import logging
 
+OPENAI_MODELS = [
+    "gpt-4-1106-preview",
+    "gpt-4",
+    "gpt-3.5-turbo-1106",
+    "gpt-3.5"
+]
+
 
 def load_test(filepath: str):
     # check if file exists
@@ -34,9 +41,11 @@ def total_score_test(data):
 def set_openai_key():
     load_dotenv()
     openai.api_key = os.environ["OPENAI_API_KEY"]
+    if not openai.api_key:
+        raise ValueError("OPENAI API KEY empty!")
 
 
-def get_answer_one_problem(data, paragraph_num: int, problem_num: int, prompt_func: callable = basic_prompt):
+def get_answer_one_problem(data, model: str, paragraph_num: int, problem_num: int, prompt_func: callable = basic_prompt):
     problem = data[paragraph_num]["problems"][problem_num]
     no_paragraph = False
     if "no_paragraph" in list(problem.keys()):
@@ -45,11 +54,14 @@ def get_answer_one_problem(data, paragraph_num: int, problem_num: int, prompt_fu
         question_plus_text = problem["question_plus"]
     else:
         question_plus_text = ""
-    return prompt_func(paragraph=data[paragraph_num]["paragraph"],
-                                             question=problem["question"],
-                                             choices=problem["choices"],
-                                             question_plus=question_plus_text,
-                                             no_paragraph=no_paragraph)
+    return prompt_func(
+        model=model,
+        paragraph=data[paragraph_num]["paragraph"],
+        question=problem["question"],
+        choices=problem["choices"],
+        question_plus=question_plus_text,
+        no_paragraph=no_paragraph
+    )
 
 
 def get_prompt_by_type(type_num: int) -> callable:
@@ -87,8 +99,15 @@ def save_results_txt(data, save_path: str, answer_list: List[str]):
 @click.command()
 @click.option('--test_file', help='test file path')
 @click.option('--save_path', help='save path')
-def main(test_file, save_path):
+@click.option('--model', help=f'select openAI model to use: {OPENAI_MODELS}')
+def main(test_file, save_path, model):
+    if not test_file:
+        raise ValueError("test file not set!")
+    if not save_path:
+        raise ValueError("save path not set!")
     set_openai_key()
+    if model not in OPENAI_MODELS:
+        raise ValueError(f"Unsupported openai model! Please select one of {OPENAI_MODELS}")
     test = load_test(test_file)
     answer_list = list()
     for paragraph_index, paragraph in enumerate(test):
