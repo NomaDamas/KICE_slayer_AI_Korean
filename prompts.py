@@ -32,7 +32,7 @@ def basic_prompt(model, paragraph, question, choices, question_plus="", no_parag
         1번, 2번, 3번, 4번, 5번 중에 하나를 정답으로 고르세요. 정답 :
     """
 
-    completion = openai.ChatCompletion.create(
+    completion = openai.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
@@ -88,7 +88,7 @@ def talk_prompt(model, paragraph, question, choices, question_plus="", no_paragr
 
     """
 
-    completion = openai.ChatCompletion.create(
+    completion = openai.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
@@ -142,7 +142,7 @@ def literature_prompt(model, paragraph, question, choices, question_plus="", no_
 
     """
 
-    completion = openai.ChatCompletion.create(
+    completion = openai.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
@@ -203,7 +203,7 @@ def grammar_prompt(model, paragraph, question, choices, question_plus="", get_pr
     """
     if get_prompt:
         return system_prompt +"\n\n" +user_prompt
-    completion = openai.ChatCompletion.create(
+    completion = openai.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},

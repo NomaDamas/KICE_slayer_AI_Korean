@@ -115,7 +115,7 @@ def main(test_file, save_path, model):
         for problem_index, problem in tqdm(enumerate(paragraph["problems"])):
             if "type" in list(problem.keys()):
                 prompt_func = get_prompt_by_type(int(problem["type"]))
-            answer = get_answer_one_problem(test, paragraph_index, problem_index, prompt_func)
+            answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
             logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
             logging.info(answer)
             answer_list.append(answer)
