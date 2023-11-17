@@ -97,13 +97,22 @@ def main(test_file, save_path, model):
                 _id += 1
                 if "type" in list(problem.keys()):
                     prompt_func = get_prompt_by_type(int(problem["type"]))
-                answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
-                logging.info(answer)
-                fw.write(f"""
-{_id}번 문제: {problem['question']}
+                answer = None
+                for i in range(3):
+                    try:
+                        answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
+                        logging.info(answer)
+                        break
+                    except Exception as e:
+                        print(f"RETRY, Failed! id: {_id} exception: {str(e)}")
+                if not answer:
+                    print(f"RETRY FAILED id: {_id}")
+                    continue
+                fw.write(f"""{_id}번 문제: {problem['question']}
 정답: {problem['answer']}
 배점: {problem['score']}
-GPT 풀이: {answer}\n\n""")
+GPT 풀이: {answer}
+----------------------\n""")
                 fw.flush()
 
 
