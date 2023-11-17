@@ -1,14 +1,14 @@
 import json
+import logging
 import os
 from typing import List
 
-from dotenv import load_dotenv
-import openai
-from prompts import basic_prompt, talk_prompt, literature_prompt, grammar_prompt
 import click
+import openai
+from dotenv import load_dotenv
 from tqdm import tqdm
-import time
-import logging
+
+from prompts import basic_prompt, literature_prompt, grammar_prompt
 
 OPENAI_MODELS = [
     "gpt-4-1106-preview",
@@ -75,27 +75,6 @@ def get_prompt_by_type(type_num: int) -> callable:
     else:
         return grammar_prompt
 
-
-def save_results_txt(data, save_path: str, answer_list: List[str]):
-    solutions = list()
-    for pa in data:
-        for problem in pa["problems"]:
-            solutions.append(problem["answer"])
-
-    scores = list()
-    for pa in data:
-        for problem in pa["problems"]:
-            scores.append(problem["score"])
-
-    f = open(save_path, 'w', encoding='UTF-8')
-    for i, item in enumerate(answer_list):
-        txt = f'{i + 1}번 문제 : {item}\n정답 : {solutions[i]}\n배점 : {scores[i]}\n----------------------------\n'
-        print(txt)
-        f.write(txt)
-    f.close()
-    print("saved DONE")
-
-
 @click.command()
 @click.option('--test_file', help='test file path')
 @click.option('--save_path', help='save path')
@@ -105,22 +84,29 @@ def main(test_file, save_path, model):
         raise ValueError("test file not set!")
     if not save_path:
         raise ValueError("save path not set!")
+    logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
     set_openai_key()
     if model not in OPENAI_MODELS:
         raise ValueError(f"Unsupported openai model! Please select one of {OPENAI_MODELS}")
     test = load_test(test_file)
     answer_list = list()
-    for paragraph_index, paragraph in enumerate(test):
-        prompt_func = get_prompt_by_type(int(paragraph["type"]))
-        for problem_index, problem in tqdm(enumerate(paragraph["problems"]), total=len(paragraph["problems"])):
-            if "type" in list(problem.keys()):
-                prompt_func = get_prompt_by_type(int(problem["type"]))
-            answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
-            logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
-            logging.info(answer)
-            answer_list.append(answer)
-            time.sleep(20)
-    save_results_txt(test, save_path, answer_list)
+
+    _id = 0
+    with open(save_path, "w", encoding="UTF-8") as fw:
+        for paragraph_index, paragraph in enumerate(test):
+            prompt_func = get_prompt_by_type(int(paragraph["type"]))
+            for problem_index, problem in tqdm(enumerate(paragraph["problems"]), total=len(paragraph["problems"])):
+                _id += 1
+                if "type" in list(problem.keys()):
+                    prompt_func = get_prompt_by_type(int(problem["type"]))
+                answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
+                logging.info(answer)
+                fw.write(f"""
+{_id}번 문제: {problem['question']}
+정답: {problem['answer']}
+배점: {problem['score']}
+GPT 풀이: {answer}\n\n""")
+                fw.flush()
 
 
 if __name__ == "__main__":
