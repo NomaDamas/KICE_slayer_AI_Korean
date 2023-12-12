@@ -127,7 +127,7 @@ def main(test_file, save_path, model):
                 fw.write(f"""{_id}번 문제: {problem['question']}
 정답: {problem['answer']}
 배점: {problem['score']}
-GPT 풀이: {answer}
+GPT 풀이: \n{answer}
 ----------------------\n""")
                 fw.flush()
 
