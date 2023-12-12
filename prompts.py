@@ -39,7 +39,7 @@ def basic_prompt(model, paragraph, question, choices, question_plus="", no_parag
             {"role": "user", "content": user_prompt}
         ]
     )
-    return completion.choices[0].message.content
+    return completion.usage.prompt_tokens, completion.usage.completion_tokens ,completion.choices[0].message.content
 
 
 def talk_prompt(model, paragraph, question, choices, question_plus="", no_paragraph=False):
@@ -93,7 +93,7 @@ def talk_prompt(model, paragraph, question, choices, question_plus="", no_paragr
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ], top_p=0)
-    return completion.choices[0].message.content
+    return completion.usage.prompt_tokens, completion.usage.completion_tokens ,completion.choices[0].message.content
 
 
 def literature_prompt(model, paragraph, question, choices, question_plus="", no_paragraph=False):
@@ -146,7 +146,7 @@ def literature_prompt(model, paragraph, question, choices, question_plus="", no_
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ], top_p=0)
-    return completion.choices[0].message.content
+    return completion.usage.prompt_tokens, completion.usage.completion_tokens ,completion.choices[0].message.content
 
 
 def grammar_prompt(model, paragraph, question, choices, question_plus="", get_prompt=False, no_paragraph=False):
@@ -206,4 +206,4 @@ def grammar_prompt(model, paragraph, question, choices, question_plus="", get_pr
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ], top_p=0)
-    return completion.choices[0].message.content
+    return completion.usage.prompt_tokens, completion.usage.completion_tokens ,completion.choices[0].message.content
