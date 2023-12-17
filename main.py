@@ -73,6 +73,18 @@ def get_prompt_by_type(type_num: int) -> callable:
         return literature_prompt
     else:
         return grammar_prompt
+    
+
+def cost_calc(model: str, input_token: int, output_token: int) -> float:
+    if model == "gpt-4-1106-preview":
+        return input_token * 0.00001 + output_token * 0.00003
+    elif model == "gpt-4":
+        return input_token * 0.00003 + output_token * 0.00006
+    elif model == "gpt-3.5-turbo-1106":
+        return input_token * 0.000001 + output_token * 0.000002
+    elif model == "gpt-3.5":
+        return input_token * 0.0000015 + output_token * 0.000002
+
 
 @click.command()
 @click.option('--test_file', help='test file path')
@@ -89,6 +101,7 @@ def main(test_file, save_path, model):
         raise ValueError(f"Unsupported openai model! Please select one of {OPENAI_MODELS}")
     test = load_test(test_file)
 
+    total_cost = 0
     _id = 0
     with open(save_path, "w", encoding="UTF-8") as fw:
         for paragraph_index, paragraph in enumerate(test):
@@ -98,9 +111,12 @@ def main(test_file, save_path, model):
                 if "type" in list(problem.keys()):
                     prompt_func = get_prompt_by_type(int(problem["type"]))
                 answer = None
-                for i in range(3):
+                for _ in range(3):
                     try:
-                        answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
+                        input_token, output_token, answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
+                        cost = cost_calc(model, input_token, output_token)
+                        total_cost += cost
+                        logging.info(cost)
                         logging.info(answer)
                         break
                     except Exception as e:
@@ -111,7 +127,7 @@ def main(test_file, save_path, model):
                 fw.write(f"""{_id}번 문제: {problem['question']}
 정답: {problem['answer']}
 배점: {problem['score']}
-GPT 풀이: {answer}
+GPT 풀이: \n{answer}
 ----------------------\n""")
                 fw.flush()
 
