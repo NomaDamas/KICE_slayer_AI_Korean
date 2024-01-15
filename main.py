@@ -1,19 +1,19 @@
 import json
 import logging
 import os
-
 import click
 import openai
 from dotenv import load_dotenv
 from tqdm import tqdm
-
 from prompts import basic_prompt, literature_prompt, grammar_prompt
 
-OPENAI_MODELS = [
+
+MODELS = [
     "gpt-4-1106-preview",
     "gpt-4",
     "gpt-3.5-turbo-1106",
-    "gpt-3.5"
+    "gpt-3.5",
+    "HCX-002"
 ]
 
 
@@ -84,21 +84,24 @@ def cost_calc(model: str, input_token: int, output_token: int) -> float:
         return input_token * 0.000001 + output_token * 0.000002
     elif model == "gpt-3.5":
         return input_token * 0.0000015 + output_token * 0.000002
+    elif model == "HCX-002":
+        return input_token * 0.005 + output_token * 0.005
 
 
 @click.command()
 @click.option('--test_file', help='test file path')
 @click.option('--save_path', help='save path')
-@click.option('--model', help=f'select openAI model to use: {OPENAI_MODELS}')
+@click.option('--model', help=f'select AI model to use: {MODELS}')
 def main(test_file, save_path, model):
     if not test_file:
         raise ValueError("test file not set!")
     if not save_path:
         raise ValueError("save path not set!")
     logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
-    set_openai_key()
-    if model not in OPENAI_MODELS:
-        raise ValueError(f"Unsupported openai model! Please select one of {OPENAI_MODELS}")
+    if model not in MODELS:
+        raise ValueError(f"Unsupported AI model! Please select one of {MODELS}")
+    if model != "HCX-002":
+        set_openai_key()
     test = load_test(test_file)
 
     total_cost = 0
@@ -127,7 +130,7 @@ def main(test_file, save_path, model):
                 fw.write(f"""{_id}번 문제: {problem['question']}
 정답: {problem['answer']}
 배점: {problem['score']}
-GPT 풀이: \n{answer}
+AI 풀이: \n{answer}
 ----------------------\n""")
                 fw.flush()
 
