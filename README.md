@@ -235,7 +235,7 @@ pip install -r requirements.txt
 마지막으로, `main.py`를 실행합니다.
 
 ```
-python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_result.txt
+python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_result.txt --model=gpt-4
 
 ```
 

@@ -13,7 +13,7 @@ MODELS = [
     "gpt-4",
     "gpt-3.5-turbo-1106",
     "gpt-3.5",
-    "HCX-002"
+    "HCX-003"
 ]
 
 
@@ -84,7 +84,7 @@ def cost_calc(model: str, input_token: int, output_token: int) -> float:
         return input_token * 0.000001 + output_token * 0.000002
     elif model == "gpt-3.5":
         return input_token * 0.0000015 + output_token * 0.000002
-    elif model == "HCX-002":
+    elif model == "HCX-003":
         return input_token * 0.005 + output_token * 0.005
 
 
