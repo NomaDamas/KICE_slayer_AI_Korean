@@ -16,7 +16,7 @@ class CompletionExecutor:
             "X-NCP-APIGW-API-KEY": self._api_key_primary_val,
             'Content-Type': 'application/json; charset=utf-8',
         }
-        return requests.post(self._host + '/testapp/v1/chat-completions/HCX-002', headers=headers, json=completion_request).text
+        return requests.post(self._host + '/testapp/v1/chat-completions/HCX-003', headers=headers, json=completion_request).text
 
 
 
@@ -159,7 +159,7 @@ def literature_prompt(model, paragraph, question, choices, question_plus="", no_
         5번 - {choices[4]}
 
     """
-    if model == "HCX-002":
+    if model == "HCX-003":
         
         # API KEY 불러오기
         load_dotenv()
@@ -258,7 +258,7 @@ def grammar_prompt(model, paragraph, question, choices, question_plus="", get_pr
     if get_prompt:
         return system_prompt +"\n\n" +user_prompt
     
-    if model == "HCX-002":
+    if model == "HCX-003":
         
         # API KEY 불러오기
         load_dotenv()
