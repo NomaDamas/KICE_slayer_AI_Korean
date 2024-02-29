@@ -58,13 +58,26 @@ def get_answer_one_problem(data, paragraph_num: int, problem_num: int, prompt_fu
 def get_prompt_by_type(type_num: int) -> callable:
     # 0 : 비문학, 1 : 문학, 2 : 화법과 작문, 3 : 문법
     if type_num == 0:
-        return basic_prompt
+        return literature_prompt
     elif type_num == 1:
         return literature_prompt
     elif type_num == 2:
         return literature_prompt
     else:
         return grammar_prompt
+
+
+def cost_calc(model: str, input_token: int, output_token: int) -> float:
+    if model == "gpt-4-1106-preview":
+        return input_token * 0.00001 + output_token * 0.00003
+    elif model == "gpt-4":
+        return input_token * 0.00003 + output_token * 0.00006
+    elif model == "gpt-3.5-turbo-1106":
+        return input_token * 0.000001 + output_token * 0.000002
+    elif model == "gpt-3.5":
+        return input_token * 0.0000015 + output_token * 0.000002
+    elif model == "HCX-003":
+        return input_token * 0.005 + output_token * 0.005
 
 
 def save_results_txt(data, save_path: str, answer_list: List[str]):
