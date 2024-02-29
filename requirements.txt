@@ -3,3 +3,7 @@ guidance
 python-dotenv
 tqdm
 click
+langchain
+pandas
+google-generativeai
+bardapi
