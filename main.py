@@ -1,6 +1,5 @@
 import json
 import os
-import time
 from typing import List
 
 import click
@@ -8,18 +7,15 @@ import openai
 import pandas as pd
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import GooglePalm, VLLMOpenAI
+from langchain.llms import VLLMOpenAI
 from langchain.schema import StrOutputParser
 from tqdm import tqdm
 
-from kt import KTMRC
-from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt, zero_shot_cot_prompt, \
-    zero_shot_cot_prompt_plus, ps_prompt, ps_prompt_plus, wook_prompt, wook_prompt_plus, wook_prompt_v2, \
-    wook_prompt_v2_plus
+from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt, active_prompt_plus, \
+    active_prompt
 
 
 def load_test(filepath: str):
-    # check if file exists
     if not os.path.isfile(filepath):
         raise FileNotFoundError(f'File not found: {filepath}')
 
@@ -100,16 +96,14 @@ def save_result_pd(save_path: str, answer_list):
 
 def select_model(model_name: str):
     if model_name == 'gpt-4':
-        return ChatOpenAI(model_name='gpt-4-32k')
-    elif model_name == 'llama-2':
+        return ChatOpenAI(model_name='gpt-4')
+    elif model_name == 'synatra':
         return VLLMOpenAI(model_name="maywell/Synatra-7B-v0.3-base", openai_api_base=os.getenv('VLLM_BASE_URL'),
                           openai_api_key="")
-    elif model_name == 'palm':
-        return GooglePalm()
-    elif model_name == 'kt':
-        return KTMRC()
+    elif model_name == 'gpt-3':
+        return ChatOpenAI(model_name='gpt-3.5-turbo-16k')
     else:
-        raise ValueError('model_name must be one of gpt-4, llama-2, palm, kt')
+        raise ValueError('model_name must be one of gpt-4, gpt-3, synatra')
 
 
 def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_list=None,
@@ -138,22 +132,30 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_lis
                 paragraph_text = paragraph['paragraph']
             if "question_plus" in list(problem.keys()):
                 question_plus_text = problem["question_plus"]
-                prompt = prompt_base  # edit this for new prompt
+                prompt = prompt_plus
+                runnable = prompt | model | StrOutputParser()
+                answer = runnable.invoke({
+                    "question": problem["question"],
+                    "paragraph": paragraph_text,
+                    "question_plus": question_plus_text,
+                    "choices_1": problem["choices"][0],
+                    "choices_2": problem["choices"][1],
+                    "choices_3": problem["choices"][2],
+                    "choices_4": problem["choices"][3],
+                    "choices_5": problem["choices"][4],
+                })
             else:
-                prompt = prompt_plus  # edit here for new prompt
-                question_plus_text = ""
-
-            runnable = prompt | model | StrOutputParser()
-            answer = runnable.invoke({
-                "question": problem["question"],
-                "paragraph": paragraph_text,
-                "question_plus": question_plus_text,
-                "choices_1": problem["choices"][0],
-                "choices_2": problem["choices"][1],
-                "choices_3": problem["choices"][2],
-                "choices_4": problem["choices"][3],
-                "choices_5": problem["choices"][4],
-            })
+                prompt = prompt_base
+                runnable = prompt | model | StrOutputParser()
+                answer = runnable.invoke({
+                    "question": problem["question"],
+                    "paragraph": paragraph_text,
+                    "choices_1": problem["choices"][0],
+                    "choices_2": problem["choices"][1],
+                    "choices_3": problem["choices"][2],
+                    "choices_4": problem["choices"][3],
+                    "choices_5": problem["choices"][4],
+                })
 
             answer_list.append([paragraph['id'], i, problem['answer'], answer,
                                 problem['score']])  # id, problem_num, gt_answer, pred, score
@@ -167,7 +169,8 @@ def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_lis
 @click.option('--start_num', default=0, help='evaluation start to this number')
 @click.option('--end_num', default=50, help='evaluation end to this number')
 def main(test_file, save_path, model_name, start_num, end_num):
-    main_func(test_file, save_path, model_name, start_num, end_num)
+    main_func(test_file, save_path, model_name, start_num, end_num,
+              prompt_base=active_prompt, prompt_plus=active_prompt_plus)
 
 
 if __name__ == "__main__":
