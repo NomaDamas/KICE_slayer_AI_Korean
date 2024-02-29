@@ -235,7 +235,7 @@ pip install -r requirements.txt
 마지막으로, `main.py`를 실행합니다.
 
 ```
-python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_result.txt
+python main.py --test_file=./data/2023_11_KICE.json --save_path=./result/your_result.txt --model=gpt-4
 
 ```
 
@@ -253,7 +253,7 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 실행마�
 [NomaDamas 구성]
 
 - 지도 교수: 정철현 박사 ([이메일](mailto:c.jeong@handong.edu))
-- 구성원: 김동규 ([이메일](mailto:vkehfdl1@gmail.com)), 김병욱 ([이메일](mailto:andreaytk2000@gmail.com)), 한동건 ([이메일](mailto:hanpanjjang1@gmail.com))
+- 구성원: 김동규 ([이메일](mailto:vkehfdl1@gmail.com)), 김병욱 ([이메일](mailto:bwook00@khu.ac.kr)), 한동건 ([이메일](mailto:hanpanjjang1@gmail.com))
 
 ## Lesson Learned
 
