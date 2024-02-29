@@ -574,9 +574,12 @@ python run_all.py --dir_name=your/save/path --model_name=gpt-4 --start_year=2015
 
 ```
 
-—test_file을 변경하면 다른 연도의 시험도 풀어볼 수 있습니다. 현재 레포에는 19 수능과 22 수능도 준비되어 있습니다.
+--dir_name은 LLM의 대답이 포함된 결과 텍스트 파일을 저장하는 경로입니다.
 
-—save_path는 GPT-4의 대답이 포함된 결과 텍스트 파일을 저장하는 경로입니다.
+--model_name은 사용할 LLM의 이름입니다. 현재는 'gpt-4', 'gpt-3.5-turbo-16k', 'synatra'(7b)를 지원합니다.
+
+--start_year와 --end_year를 통해 수능의 범위를 지정할 수 있습니다. 현재는 2015년도부터 2024년도 수능까지 준비되어 있습니다
+
 
 top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 실행마다 성적이 조금씩 달라질 수도 있다는 점 주의 부탁드립니다.
 
