@@ -1,24 +1,21 @@
 import json
-import logging
 import os
+from typing import List
+
 import click
 import openai
+import pandas as pd
 from dotenv import load_dotenv
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import VLLMOpenAI
+from langchain.schema import StrOutputParser
 from tqdm import tqdm
-from prompts import basic_prompt, literature_prompt, grammar_prompt
 
-
-MODELS = [
-    "gpt-4-1106-preview",
-    "gpt-4",
-    "gpt-3.5-turbo-1106",
-    "gpt-3.5",
-    "HCX-003"
-]
+from prompts import literature_prompt, grammar_prompt, basic_prompt_plus, basic_prompt, active_prompt_plus, \
+    active_prompt
 
 
 def load_test(filepath: str):
-    # check if file exists
     if not os.path.isfile(filepath):
         raise FileNotFoundError(f'File not found: {filepath}')
 
@@ -40,11 +37,9 @@ def total_score_test(data):
 def set_openai_key():
     load_dotenv()
     openai.api_key = os.environ["OPENAI_API_KEY"]
-    if not openai.api_key:
-        raise ValueError("OPENAI API KEY empty!")
 
 
-def get_answer_one_problem(data, model: str, paragraph_num: int, problem_num: int, prompt_func: callable = basic_prompt):
+def get_answer_one_problem(data, paragraph_num: int, problem_num: int, prompt_func: callable = basic_prompt):
     problem = data[paragraph_num]["problems"][problem_num]
     no_paragraph = False
     if "no_paragraph" in list(problem.keys()):
@@ -53,14 +48,11 @@ def get_answer_one_problem(data, model: str, paragraph_num: int, problem_num: in
         question_plus_text = problem["question_plus"]
     else:
         question_plus_text = ""
-    return prompt_func(
-        model=model,
-        paragraph=data[paragraph_num]["paragraph"],
-        question=problem["question"],
-        choices=problem["choices"],
-        question_plus=question_plus_text,
-        no_paragraph=no_paragraph
-    )
+    return prompt_func(paragraph=data[paragraph_num]["paragraph"],
+                       question=problem["question"],
+                       choices=problem["choices"],
+                       question_plus=question_plus_text,
+                       no_paragraph=no_paragraph)
 
 
 def get_prompt_by_type(type_num: int) -> callable:
@@ -73,7 +65,7 @@ def get_prompt_by_type(type_num: int) -> callable:
         return literature_prompt
     else:
         return grammar_prompt
-    
+
 
 def cost_calc(model: str, input_token: int, output_token: int) -> float:
     if model == "gpt-4-1106-preview":
@@ -88,51 +80,110 @@ def cost_calc(model: str, input_token: int, output_token: int) -> float:
         return input_token * 0.005 + output_token * 0.005
 
 
+def save_results_txt(data, save_path: str, answer_list: List[str]):
+    solutions = list()
+    for pa in data:
+        for problem in pa["problems"]:
+            solutions.append(problem["answer"])
+
+    scores = list()
+    for pa in data:
+        for problem in pa["problems"]:
+            scores.append(problem["score"])
+
+    f = open(save_path, 'w', encoding='UTF-8')
+    for i, item in enumerate(answer_list):
+        txt = f'{i + 1}번 문제 : {item}\n정답 : {solutions[i]}\n배점 : {scores[i]}\n----------------------------\n'
+        print(txt)
+        f.write(txt)
+    f.close()
+    print("saved DONE")
+
+
+def save_result_pd(save_path: str, answer_list):
+    if not save_path.endswith('.csv'):
+        raise ValueError('save_path must be a csv file')
+    df = pd.DataFrame(answer_list, columns=['id', 'problem_num', 'gt_answer', 'pred', 'score'])
+    df.to_csv(save_path, index=False, encoding='utf-8-sig')
+
+
+def select_model(model_name: str):
+    if model_name == 'gpt-4':
+        return ChatOpenAI(model_name='gpt-4')
+    elif model_name == 'synatra':
+        return VLLMOpenAI(model_name="maywell/Synatra-7B-v0.3-base", openai_api_base=os.getenv('VLLM_BASE_URL'),
+                          openai_api_key="")
+    elif model_name == 'gpt-3':
+        return ChatOpenAI(model_name='gpt-3.5-turbo-16k')
+    else:
+        raise ValueError('model_name must be one of gpt-4, gpt-3, synatra')
+
+
+def main_func(test_file, save_path, model_name, start_num=0, end_num=50, run_list=None,
+              prompt_base=basic_prompt, prompt_plus=basic_prompt_plus):
+    load_dotenv()
+    set_openai_key()
+    test = load_test(test_file)
+    answer_list = list()
+    model = select_model(model_name)
+    i = 0
+    if run_list is None:
+        run_list = list(range(1, 46))
+    for paragraph_index, paragraph in enumerate(test):
+        for problem_index, problem in tqdm(enumerate(paragraph["problems"])):
+            i += 1
+            if i < start_num:
+                continue
+            if i > end_num:
+                break
+            if i not in run_list:
+                continue
+
+            if "no_paragraph" in list(problem.keys()):
+                paragraph_text = ""
+            else:
+                paragraph_text = paragraph['paragraph']
+            if "question_plus" in list(problem.keys()):
+                question_plus_text = problem["question_plus"]
+                prompt = prompt_plus
+                runnable = prompt | model | StrOutputParser()
+                answer = runnable.invoke({
+                    "question": problem["question"],
+                    "paragraph": paragraph_text,
+                    "question_plus": question_plus_text,
+                    "choices_1": problem["choices"][0],
+                    "choices_2": problem["choices"][1],
+                    "choices_3": problem["choices"][2],
+                    "choices_4": problem["choices"][3],
+                    "choices_5": problem["choices"][4],
+                })
+            else:
+                prompt = prompt_base
+                runnable = prompt | model | StrOutputParser()
+                answer = runnable.invoke({
+                    "question": problem["question"],
+                    "paragraph": paragraph_text,
+                    "choices_1": problem["choices"][0],
+                    "choices_2": problem["choices"][1],
+                    "choices_3": problem["choices"][2],
+                    "choices_4": problem["choices"][3],
+                    "choices_5": problem["choices"][4],
+                })
+
+            answer_list.append([paragraph['id'], i, problem['answer'], answer,
+                                problem['score']])  # id, problem_num, gt_answer, pred, score
+            save_result_pd(save_path, answer_list)
+
+
 @click.command()
 @click.option('--test_file', help='test file path')
 @click.option('--save_path', help='save path')
-@click.option('--model', help=f'select AI model to use: {MODELS}')
-def main(test_file, save_path, model):
-    if not test_file:
-        raise ValueError("test file not set!")
-    if not save_path:
-        raise ValueError("save path not set!")
-    logging.basicConfig(filename=f"{save_path.split('.')[0]}_log.log", level=logging.INFO)
-    if model not in MODELS:
-        raise ValueError(f"Unsupported AI model! Please select one of {MODELS}")
-    if model != "HCX-002":
-        set_openai_key()
-    test = load_test(test_file)
-
-    total_cost = 0
-    _id = 0
-    with open(save_path, "w", encoding="UTF-8") as fw:
-        for paragraph_index, paragraph in enumerate(test):
-            prompt_func = get_prompt_by_type(int(paragraph["type"]))
-            for problem_index, problem in tqdm(enumerate(paragraph["problems"]), total=len(paragraph["problems"])):
-                _id += 1
-                if "type" in list(problem.keys()):
-                    prompt_func = get_prompt_by_type(int(problem["type"]))
-                answer = None
-                for _ in range(3):
-                    try:
-                        input_token, output_token, answer = get_answer_one_problem(test, model, paragraph_index, problem_index, prompt_func)
-                        cost = cost_calc(model, input_token, output_token)
-                        total_cost += cost
-                        logging.info(cost)
-                        logging.info(answer)
-                        break
-                    except Exception as e:
-                        print(f"RETRY, Failed! id: {_id} exception: {str(e)}")
-                if not answer:
-                    print(f"RETRY FAILED id: {_id}")
-                    continue
-                fw.write(f"""{_id}번 문제: {problem['question']}
-정답: {problem['answer']}
-배점: {problem['score']}
-AI 풀이: \n{answer}
-----------------------\n""")
-                fw.flush()
+@click.option('--model_name', help='choice between gpt-4, llama-2, palm, kt')
+@click.option('--start_num', default=0, help='evaluation start to this number')
+@click.option('--end_num', default=50, help='evaluation end to this number')
+def main(test_file, save_path, model_name, start_num, end_num):
+    main_func(test_file, save_path, model_name, start_num, end_num,
+              prompt_base=active_prompt, prompt_plus=active_prompt_plus)
 
 
 if __name__ == "__main__":
