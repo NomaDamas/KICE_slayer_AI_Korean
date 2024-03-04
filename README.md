@@ -449,7 +449,7 @@ LLM 스스로 문제를 풀기 위한 계획을 세우게 하고, 해당 계획�
 
 (API를 사용하지 못한 관계로, 공개되어 있는 UI 환경을 활용하여 테스트를 수행했습니다)
 
-## # VIII. 결론
+## VIII. 결론
 
 ### 모델 별 결론
 
@@ -591,3 +591,9 @@ top_p가 0이어도 GPT-4의 특성상 결과값이 변할 수 있어 실행마�
 
 - 지도 교수: 정철현 박사 ([이메일](mailto:c.jeong@handong.edu))
 - 구성원: 김동규 ([이메일](mailto:vkehfdl1@gmail.com)), 김병욱 ([이메일](mailto:bwook00@khu.ac.kr)), 한동건 ([이메일](mailto:hanpanjjang1@gmail.com))
+
+
+## Acknowledgement
+
+수능 문제의 저작권은 모두 한국교육과정평가원에 있습니다.
+수능 문제 10개년 데이터셋의 공개 가능 여부는 문의중입니다.
