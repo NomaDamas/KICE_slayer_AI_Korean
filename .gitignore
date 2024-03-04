@@ -2,3 +2,5 @@
 .env
 .ipynb_checkpoints
 *.log
+data/
+!data/2023_11_KICE.json
