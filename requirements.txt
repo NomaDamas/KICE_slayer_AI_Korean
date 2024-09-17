@@ -7,3 +7,4 @@ langchain
 pandas
 google-generativeai
 bardapi
+AutoRAG>=0.2.17
