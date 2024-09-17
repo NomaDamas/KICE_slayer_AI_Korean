@@ -1,0 +1,41 @@
+node_lines:
+- node_line_name: prompt_node_line
+  nodes:
+    - node_type: prompt_maker
+      strategy:
+        metrics:
+          - metric_name: kice_metric
+      modules:
+        - module_type: fstring
+          prompt:
+          - |
+            국어 시험 문제를 푸는 대한민국의 고3 수험생으로서 위의 요약을 바탕으로 다음 문제의 답을 구하세요.
+    
+            문제를 풀이할 때, 반드시 지문을 참고하세요.
+            문제는 무조건 1개의 정답만 있습니다.
+            문제를 풀이할 때 모든 선택지들을 검토하세요.
+            모든 선택지마다 근거를 지문에서 찾아 설명하세요.
+            
+            다음의 형식을 따라 답변하세요.
+            1번: (선택지 1번에 대한 답변) + "(지문 속 근거가 된 문장)"
+            2번: (선택지 2번에 대한 답변) + "(지문 속 근거가 된 문장)"
+            3번: (선택지 3번에 대한 답변) + "(지문 속 근거가 된 문장)"
+            4번: (선택지 4번에 대한 답변) + "(지문 속 근거가 된 문장)"
+            5번: (선택지 5번에 대한 답변) + "(지문 속 근거가 된 문장)"
+            최종 정답: (최종 정답)
+            
+            지문 :
+            {retrieved_contents}
+            
+            질문 :
+            {query}
+            
+            정답 :
+    - node_type: generator
+      strategy:
+        metrics:
+          - metric_name: kice_metric
+      modules:
+        - module_type: openai_llm
+          llm: [ gpt-4o-mini, gpt-4o, o1-mini, o1-preview ]
+          batch: 4

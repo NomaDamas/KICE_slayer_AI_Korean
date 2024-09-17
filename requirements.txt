@@ -8,3 +8,4 @@ pandas
 google-generativeai
 bardapi
 AutoRAG>=0.2.17
+llama-index-llms-upstage
