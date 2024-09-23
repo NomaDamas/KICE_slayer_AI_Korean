@@ -37,5 +37,8 @@ node_lines:
           - metric_name: kice_metric
       modules:
         - module_type: openai_llm
-          llm: [ gpt-4o-mini, gpt-4o, o1-mini, o1-preview ]
+          llm: [ gpt-4o-mini, gpt-4o ]
+          batch: 25
+        - module_type: openai_llm
+          llm: [ o1-mini, o1-preview ]
           batch: 4
