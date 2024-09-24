@@ -2,12 +2,43 @@
 
 ## I. 요약 
 
-### 2024.09 업데이트
+# 2024.09 업데이트
 
-최신 모델인 gpt-4o1, gpt-4o, gpt-4o-mini, 그리고 Upstage의 Solar Pro 모델을 포함하여 벤치마킹을 진행하였습니다.
+최신 모델인 gpt o1-preview, o1-mini, gpt-4o, 그리고 gpt-4o-mini 모델을 포함하여 벤치마킹을 진행하였습니다.
+
+10개년도 수능 모두를 측정하지는 못했으며, 2024년도 수능만을 테스트 하였습니다.
+
+## 결과
+
+## <24 수능 (1개년) 모델 성능 비교 결과>
+- o1-preview: 88점 (1등급, 상위 4%)
+- o1-mini : 60점 (5등급)
+- gpt-4o : 69점 (4등급)
+- gpt-4o-mini : 62점(4등급)
 
 
+## <사용한 비용 결과>
+- o1-preview : 12.56$
+- o1-mini : 1.3$
+- gpt-4o : 0.72$
+- gpt-4o-mini : 0.02$
 
+## 사용법
+
+[AutoRAG](https://github.com/Marker-Inc-Korea/AutoRAG)를 사용하여 간단하게 수능 벤치마크를 할 수 있도록 리팩토링 하였습니다. 
+
+1. `AutoRAG`를 설치합니다.
+    ```bash
+    pip install AutoRAG
+   ```
+2. `.env`에 OpenAI API KEY를 환경 변수로 설정합니다.
+3. `make_autorag_dataset.ipynb`를 실행하여 json 데이터를 AutoRAG 데이터셋으로 변경합니다.
+4. `autorag_run.py`를 실행합니다.
+    ```bash
+    python autorag_run.py --qa_data_path ./data/autorag/qa_2024.parquet --corpus_data_path ./data/autorag/corpus_2024.parquet
+    ```
+5. `autorag_project_dir` 폴더에서 결과를 확인합니다.
+---
 
 ![모델별_성적_비교](./resource/인공지능_국어_성적.png)
 
