@@ -1,0 +1,2 @@
+qid_for_merge,kice_metric,score_result,common_problem_score,choice_problem_score,overall_sum
+2026,"[2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2, 3, 2, 0, 2, 0, 3, 2, 2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 0, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3]","{'common_problem_score': 70, 'choice_problem_score': 24, 'overall_sum': 94}",70,24,94

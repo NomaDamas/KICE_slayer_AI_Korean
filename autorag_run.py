@@ -12,14 +12,21 @@ from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from pydantic import BaseModel
 from llama_index.llms.upstage import Upstage
+import autorag
+from llama_index.llms.together import TogetherLLM
+from llama_index.llms.anthropic import Anthropic
+from llama_index.llms.gemini import Gemini
+from llama_index.llms.groq import Groq
+from llama_index.llms.deepseek import DeepSeek
 
 load_dotenv()
+
 
 @autorag_metric_loop(fields_to_check=["generation_gt", "generated_texts"])
 def kice_metric(
         metric_inputs: List[MetricInput],
         model: str = "gpt-4o-mini-2024-07-18",
-        batch_size: int = 16,
+        batch_size: int = 1,
 ) -> List[int]:
     client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     loop = get_event_loop()
@@ -29,6 +36,7 @@ def kice_metric(
     ]
     results = loop.run_until_complete(process_batch(tasks, batch_size=batch_size))
     return results
+
 
 async def async_kice_metric(
         client,
@@ -49,8 +57,10 @@ async def async_kice_metric(
     completion = await client.beta.chat.completions.parse(
         model=model,
         messages=[
-            {"role": "system", "content": "당신은 시험을 채점하는 채점관입니다. 학생의 대답을 보고, 학생이 몇 번을 선택하였는지 구분하세요. 모든 답변은 1~5번 중에 하나입니다. 학생이 선택한 답변을 반환하세요. 만약 학생이 답변을 하지 못했다면 0번을 반환하세요."},
-            {"role": "user", "content": "해당 문제는 동건이의 콧수염에 대하여 묻는 문제입니다. 동건이는 콧수염이 있지만, 그 길이가 예전에 비해 길지 않으므로 가장 적합한 선택지는 3번입니다."},
+            {"role": "system",
+             "content": "당신은 시험을 채점하는 채점관입니다. 학생의 대답을 보고, 학생이 몇 번을 선택하였는지 구분하세요. 모든 답변은 1~5번 중에 하나입니다. 학생이 선택한 답변을 반환하세요. 만약 학생이 답변을 하지 못했다면 0번을 반환하세요."},
+            {"role": "user",
+             "content": "해당 문제는 동건이의 콧수염에 대하여 묻는 문제입니다. 동건이는 콧수염이 있지만, 그 길이가 예전에 비해 길지 않으므로 가장 적합한 선택지는 3번입니다."},
             {"role": "assistant", "content": "3"},
             {"role": "user", "content": pred},
         ],
@@ -67,7 +77,8 @@ async def async_kice_metric(
 @click.command()
 @click.option('--qa_data_path', type=click.Path(exists=True, dir_okay=False), help='Path to QA data parquet file',
               default=os.path.join('data', 'autorag', 'qa.parquet'))
-@click.option('--corpus_data_path', type=click.Path(exists=True, dir_okay=False), help='Path to corpus data parquet file',
+@click.option('--corpus_data_path', type=click.Path(exists=True, dir_okay=False),
+              help='Path to corpus data parquet file',
               default=os.path.join('data', 'autorag', 'corpus.parquet'))
 @click.option('--config', type=click.Path(exists=True, dir_okay=False), help='Path to config file',
               default=os.path.join('autorag_config.yaml'))
@@ -76,9 +87,17 @@ async def async_kice_metric(
 def main(qa_data_path, corpus_data_path, config, project_dir):
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
+
     GENERATION_METRIC_FUNC_DICT["kice_metric"] = kice_metric
+    # add custom llm
+    autorag.generator_models['togetherllm'] = TogetherLLM
+    autorag.generator_models['geminillm'] = Gemini
+    generator_models['antropicllm'] = Anthropic
+    generator_models['groqllm'] = Groq
+    generator_models['deepseekllm'] = DeepSeek
     # submit upstage llm
     generator_models["upstage"] = Upstage
+
     # run evaluation
     evaluator = Evaluator(qa_data_path, corpus_data_path, project_dir)
     evaluator.start_trial(config)
