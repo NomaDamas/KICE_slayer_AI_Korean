@@ -1,9 +1,6 @@
 .idea/
 .env
-.venv/
-.ipynb_checkpoints/
-__pycache__/
-*.py[cod]
+.ipynb_checkpoints
 *.log
-.DS_Store
-autorag_project_dir/**/summary.csv
+data/
+!data/2023_11_KICE.json
